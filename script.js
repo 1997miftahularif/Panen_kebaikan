@@ -16,7 +16,7 @@ let mode = "pen";
 let canvasWidth = 0;
 let canvasHeight = 0;
 
-// ================= ACTIVE BUTTON =================
+// ================= ACTIVE TOOL =================
 function setActive(btn){
 
   penBtn.classList.remove("active");
@@ -40,16 +40,18 @@ function setEraser(){
 // ================= RESIZE =================
 function resizeCanvas(){
 
-  canvasWidth = window.innerWidth - 320;
+  canvasWidth = window.innerWidth - 330;
   canvasHeight = window.innerHeight - 60;
 
   layers.forEach(layer => {
 
-    const temp = document.createElement("canvas");
-    temp.width = layer.canvas.width;
-    temp.height = layer.canvas.height;
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = layer.canvas.width;
+    tempCanvas.height = layer.canvas.height;
 
-    temp.getContext("2d").drawImage(layer.canvas, 0, 0);
+    const tempCtx = tempCanvas.getContext("2d");
+
+    tempCtx.drawImage(layer.canvas, 0, 0);
 
     layer.canvas.width = canvasWidth;
     layer.canvas.height = canvasHeight;
@@ -57,16 +59,17 @@ function resizeCanvas(){
     layer.canvas.style.width = canvasWidth + "px";
     layer.canvas.style.height = canvasHeight + "px";
 
-    layer.ctx.drawImage(temp, 0, 0);
+    layer.ctx.drawImage(tempCanvas, 0, 0);
   });
 }
 
 window.addEventListener("resize", resizeCanvas);
 
-// ================= LAYER =================
+// ================= ADD LAYER =================
 function addLayer(name = null){
 
   const canvas = document.createElement("canvas");
+
   canvas.className = "layer-canvas";
 
   const ctx = canvas.getContext("2d");
@@ -81,9 +84,9 @@ function addLayer(name = null){
 
   const layer = {
 
-    id: Date.now(),
+    id:Date.now() + Math.random(),
 
-    name: name || `Layer ${layers.length + 1}`,
+    name:name || `Layer ${layers.length + 1}`,
 
     canvas,
     ctx,
@@ -101,6 +104,7 @@ function addLayer(name = null){
   renderLayers();
 }
 
+// ================= RENDER LAYER =================
 function renderLayers(){
 
   layersList.innerHTML = "";
@@ -116,20 +120,35 @@ function renderLayers(){
     }
 
     div.innerHTML = `
+
       <div class="layer-top">
 
         <span>${layer.name}</span>
 
         <div class="layer-controls">
 
-          <button onclick="toggleLock(${layer.id})">
+          <!-- UP -->
+          <button onclick="moveLayerUp(${layer.id}, event)">
+            <i class="fas fa-arrow-up"></i>
+          </button>
 
+          <!-- DOWN -->
+          <button onclick="moveLayerDown(${layer.id}, event)">
+            <i class="fas fa-arrow-down"></i>
+          </button>
+
+          <!-- LOCK -->
+          <button onclick="toggleLock(${layer.id}, event)">
             <i class="fas ${
               layer.locked
-                ? "fa-lock"
-                : "fa-lock-open"
+              ? "fa-lock"
+              : "fa-lock-open"
             }"></i>
+          </button>
 
+          <!-- DELETE -->
+          <button onclick="deleteLayer(${layer.id}, event)">
+            <i class="fas fa-trash"></i>
           </button>
 
         </div>
@@ -150,6 +169,7 @@ function renderLayers(){
     div.onclick = () => {
 
       activeLayer = layer;
+
       renderLayers();
     };
 
@@ -157,7 +177,10 @@ function renderLayers(){
   });
 }
 
-function toggleLock(id){
+// ================= LOCK =================
+function toggleLock(id, e){
+
+  e.stopPropagation();
 
   const layer = layers.find(l => l.id === id);
 
@@ -166,6 +189,7 @@ function toggleLock(id){
   renderLayers();
 }
 
+// ================= OPACITY =================
 function changeOpacity(id, value){
 
   const layer = layers.find(l => l.id === id);
@@ -173,6 +197,75 @@ function changeOpacity(id, value){
   layer.opacity = value;
 
   layer.canvas.style.opacity = value;
+}
+
+// ================= DELETE =================
+function deleteLayer(id, e){
+
+  e.stopPropagation();
+
+  if(layers.length === 1){
+
+    alert("Minimal harus ada 1 layer");
+
+    return;
+  }
+
+  const index = layers.findIndex(l => l.id === id);
+
+  if(index === -1) return;
+
+  layers[index].canvas.remove();
+
+  layers.splice(index, 1);
+
+  activeLayer = layers[layers.length - 1];
+
+  renderLayers();
+}
+
+// ================= MOVE UP =================
+function moveLayerUp(id, e){
+
+  e.stopPropagation();
+
+  const index = layers.findIndex(l => l.id === id);
+
+  if(index >= layers.length - 1) return;
+
+  [layers[index], layers[index + 1]] =
+  [layers[index + 1], layers[index]];
+
+  updateCanvasOrder();
+
+  renderLayers();
+}
+
+// ================= MOVE DOWN =================
+function moveLayerDown(id, e){
+
+  e.stopPropagation();
+
+  const index = layers.findIndex(l => l.id === id);
+
+  if(index <= 0) return;
+
+  [layers[index], layers[index - 1]] =
+  [layers[index - 1], layers[index]];
+
+  updateCanvasOrder();
+
+  renderLayers();
+}
+
+// ================= UPDATE ORDER =================
+function updateCanvasOrder(){
+
+  layers.forEach(layer => {
+
+    canvasContainer.appendChild(layer.canvas);
+
+  });
 }
 
 // ================= DRAW =================
@@ -186,7 +279,6 @@ function attachDrawing(layer){
     const rect = canvas.getBoundingClientRect();
 
     return {
-
       x:e.clientX - rect.left,
       y:e.clientY - rect.top
     };
@@ -231,6 +323,7 @@ function attachDrawing(layer){
   });
 }
 
+// ================= BRUSH STYLE =================
 function setBrushStyle(ctx){
 
   ctx.lineWidth = parseInt(brushSize.value);
@@ -241,6 +334,7 @@ function setBrushStyle(ctx){
   if(mode === "pen"){
 
     ctx.globalCompositeOperation = "source-over";
+
     ctx.strokeStyle = colorPicker.value;
 
   }else{
@@ -252,7 +346,9 @@ function setBrushStyle(ctx){
 // ================= IMAGE =================
 function openImageUpload(){
 
-  document.getElementById("imageUpload").click();
+  document
+  .getElementById("imageUpload")
+  .click();
 }
 
 document
@@ -303,7 +399,9 @@ function clearCanvas(){
   );
 }
 
-// INIT
+// ================= INIT =================
 resizeCanvas();
+
 addLayer();
+
 setPen();
