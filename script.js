@@ -40,12 +40,16 @@ function setEraser(){
 // ================= RESIZE =================
 function resizeCanvas(){
 
-  canvasWidth = window.innerWidth - 330;
-  canvasHeight = window.innerHeight - 60;
+  const rect = canvasContainer.getBoundingClientRect();
+
+  canvasWidth = rect.width;
+  canvasHeight = rect.height;
 
   layers.forEach(layer => {
 
+    // simpan isi lama
     const tempCanvas = document.createElement("canvas");
+
     tempCanvas.width = layer.canvas.width;
     tempCanvas.height = layer.canvas.height;
 
@@ -53,13 +57,21 @@ function resizeCanvas(){
 
     tempCtx.drawImage(layer.canvas, 0, 0);
 
+    // resize
     layer.canvas.width = canvasWidth;
     layer.canvas.height = canvasHeight;
 
     layer.canvas.style.width = canvasWidth + "px";
     layer.canvas.style.height = canvasHeight + "px";
 
-    layer.ctx.drawImage(tempCanvas, 0, 0);
+    // redraw
+    layer.ctx.drawImage(
+      tempCanvas,
+      0,
+      0,
+      canvasWidth,
+      canvasHeight
+    );
   });
 }
 
@@ -367,19 +379,26 @@ document
 
     addLayer("Image Layer");
 
+    const padding = 40;
+
+    const maxWidth = canvasWidth - padding * 2;
+    const maxHeight = canvasHeight - padding * 2;
+
     const scale = Math.min(
-      canvasWidth / img.width,
-      canvasHeight / img.height,
-      1
+      maxWidth / img.width,
+      maxHeight / img.height
     );
 
     const width = img.width * scale;
     const height = img.height * scale;
 
+    const x = (canvasWidth - width) / 2;
+    const y = (canvasHeight - height) / 2;
+
     activeLayer.ctx.drawImage(
       img,
-      50,
-      50,
+      x,
+      y,
       width,
       height
     );
@@ -397,6 +416,48 @@ function clearCanvas(){
     canvasWidth,
     canvasHeight
   );
+}
+
+// ================= SAVE =================
+function saveImage(){
+
+  const exportCanvas = document.createElement("canvas");
+
+  exportCanvas.width = canvasWidth;
+  exportCanvas.height = canvasHeight;
+
+  const exportCtx = exportCanvas.getContext("2d");
+
+  // background putih
+  exportCtx.fillStyle = "white";
+
+  exportCtx.fillRect(
+    0,
+    0,
+    canvasWidth,
+    canvasHeight
+  );
+
+  // render semua layer
+  layers.forEach(layer => {
+
+    exportCtx.globalAlpha = layer.opacity;
+
+    exportCtx.drawImage(
+      layer.canvas,
+      0,
+      0
+    );
+  });
+
+  // download
+  const link = document.createElement("a");
+
+  link.download = "whiteboard.png";
+
+  link.href = exportCanvas.toDataURL("image/png");
+
+  link.click();
 }
 
 // ================= INIT =================
