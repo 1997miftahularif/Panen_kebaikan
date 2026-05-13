@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Whiteboard Layer System</title>
 
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
 
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
 
-  <button id="penBtn" class="active" onclick="setPen()">
+  <button
+    id="penBtn"
+    class="active"
+    onclick="setPen()"
+  >
     <i class="fas fa-pen"></i>
   </button>
 
-  <button id="eraserBtn" onclick="setEraser()">
+  <button
+    id="eraserBtn"
+    onclick="setEraser()"
+  >
     <i class="fas fa-eraser"></i>
   </button>
 
@@ -34,7 +44,11 @@
 <!-- TOPBAR -->
 <div class="topbar">
 
-  <input type="color" id="colorPicker" value="#000000">
+  <input
+    type="color"
+    id="colorPicker"
+    value="#000000"
+  >
 
   <input
     type="range"
@@ -71,7 +85,10 @@
       hidden
     >
 
-    <button class="upload-btn" onclick="openImageUpload()">
+    <button
+      class="upload-btn"
+      onclick="openImageUpload()"
+    >
       <i class="fas fa-image"></i>
       Add Image
     </button>
