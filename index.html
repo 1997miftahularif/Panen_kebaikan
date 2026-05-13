@@ -1,43 +1,89 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Whiteboard Canva UI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Whiteboard Layer System</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <button id="penBtn" class="active" onclick="setPen()"><i class="fas fa-pen"></i></button>
-  <button id="eraserBtn" onclick="setEraser()"><i class="fas fa-eraser"></i></button>
+
+  <button id="penBtn" class="active" onclick="setPen()">
+    <i class="fas fa-pen"></i>
+  </button>
+
+  <button id="eraserBtn" onclick="setEraser()">
+    <i class="fas fa-eraser"></i>
+  </button>
 
   <div class="divider"></div>
 
-  <button onclick="undo()"><i class="fas fa-undo"></i></button>
-  <button onclick="redo()"><i class="fas fa-redo"></i></button>
+  <button onclick="clearCanvas()">
+    <i class="fas fa-trash"></i>
+  </button>
 
-  <div class="divider"></div>
-
-  <button onclick="clearCanvas()"><i class="fas fa-trash"></i></button>
 </div>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <input type="color" id="colorPicker" value="#000000">
-  <input type="range" id="brushSize" min="1" max="30" value="5">
 
-  <button class="save-btn" onclick="saveImage()">
-    <i class="fas fa-download"></i> Save
-  </button>
+  <input type="color" id="colorPicker" value="#000000">
+
+  <input
+    type="range"
+    id="brushSize"
+    min="1"
+    max="50"
+    value="5"
+  >
+
 </div>
 
-<!-- CANVAS -->
-<canvas id="whiteboard"></canvas>
+<!-- WORKSPACE -->
+<div class="workspace">
+
+  <!-- LAYER PANEL -->
+  <div class="layers-panel">
+
+    <div class="layer-header">
+
+      <span>Layers</span>
+
+      <button onclick="addLayer()">
+        <i class="fas fa-plus"></i>
+      </button>
+
+    </div>
+
+    <div id="layersList"></div>
+
+    <input
+      type="file"
+      id="imageUpload"
+      accept="image/*"
+      hidden
+    >
+
+    <button class="upload-btn" onclick="openImageUpload()">
+      <i class="fas fa-image"></i>
+      Add Image
+    </button>
+
+  </div>
+
+  <!-- CANVAS -->
+  <div id="canvasContainer"></div>
+
+</div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
