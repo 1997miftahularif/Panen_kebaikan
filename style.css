@@ -2,7 +2,7 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color:transparent;
 }
 
 body{
@@ -14,10 +14,12 @@ body{
 /* SIDEBAR */
 .sidebar{
   position:fixed;
-  left:0;
   top:0;
+  left:0;
+
   width:70px;
   height:100vh;
+
   background:white;
 
   display:flex;
@@ -28,16 +30,21 @@ body{
   padding:10px;
 
   box-shadow:2px 0 10px rgba(0,0,0,0.05);
+
   z-index:1000;
 }
 
 .sidebar button{
   width:45px;
   height:45px;
+
   border:none;
   border-radius:10px;
+
   background:#f3f3f3;
+
   cursor:pointer;
+
   font-size:18px;
 }
 
@@ -55,9 +62,11 @@ body{
 /* TOPBAR */
 .topbar{
   position:fixed;
-  left:70px;
+
   top:0;
+  left:70px;
   right:0;
+
   height:60px;
 
   background:white;
@@ -76,6 +85,7 @@ body{
 /* WORKSPACE */
 .workspace{
   position:absolute;
+
   top:60px;
   left:70px;
   right:0;
@@ -84,10 +94,12 @@ body{
   display:flex;
 }
 
-/* LAYER PANEL */
+/* LAYERS PANEL */
 .layers-panel{
-  width:250px;
+  width:260px;
+
   background:white;
+
   border-right:1px solid #ddd;
 
   padding:10px;
@@ -106,19 +118,28 @@ body{
 .layer-header button{
   width:35px;
   height:35px;
+
   border:none;
   border-radius:8px;
+
   background:#4caf50;
   color:white;
+
   cursor:pointer;
 }
 
 .layer-item{
   background:#f3f3f3;
+
   border-radius:10px;
+
   padding:10px;
+
   margin-bottom:10px;
+
   cursor:pointer;
+
+  transition:0.2s;
 }
 
 .layer-item.active{
@@ -133,7 +154,7 @@ body{
 
 .layer-controls{
   display:flex;
-  gap:8px;
+  gap:5px;
 }
 
 .layer-controls button{
@@ -144,6 +165,7 @@ body{
   border-radius:6px;
 
   background:white;
+
   cursor:pointer;
 }
 
@@ -154,6 +176,7 @@ body{
 
 .upload-btn{
   width:100%;
+
   padding:10px;
 
   border:none;
@@ -165,11 +188,13 @@ body{
   cursor:pointer;
 }
 
-/* CANVAS AREA */
+/* CANVAS */
 #canvasContainer{
-  flex:1;
   position:relative;
+  flex:1;
+
   overflow:hidden;
+
   background:#e9edf2;
 }
 
@@ -177,6 +202,8 @@ body{
   position:absolute;
   top:0;
   left:0;
+
   background:transparent;
+
   touch-action:none;
 }
